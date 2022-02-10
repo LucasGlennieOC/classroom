@@ -10,7 +10,7 @@ throw_sound = pygame.mixer.Sound("throw.mp3")
 
 player_walk_images = [pygame.image.load("graphics/run1.png"), pygame.image.load("graphics/run2.png"), pygame.image.load("graphics/run3.png"), pygame.image.load("graphics/run4.png")]
 player_idle_images = [pygame.image.load("graphics/idle/idle.png"), pygame.image.load("graphics/idle/idle1.png"), pygame.image.load("graphics/idle/idle2.png"), pygame.image.load("graphics/idle/idle4.png"), pygame.image.load("graphics/idle/idle5.png"), pygame.image.load("graphics/idle/idle6.png"), pygame.image.load("graphics/idle/idle7.png")]
-
+teacher_image = pygame.image.load("graphics/teacher.png")
 
 class Player:
     def __init__(self, x, y, width, height):
@@ -45,7 +45,18 @@ class Player:
         self.moving_right = False
         self.moving_left = False
 
+class Teacher:
+    def __init__(self, x, y, width, height):
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+    def main(self, display):
+        display.blit(pygame.transform.scale(teacher_image, (72, 72)), (100-display_scroll[0], 100-display_scroll[1]))
+    
 
+
+    
 class PlayerBullet:
     def __init__(self, x, y, mouse_x, mouse_y):
         self.x = x
@@ -64,13 +75,16 @@ class PlayerBullet:
         
 
 player = Player(400, 300, 32, 32)
-
+teacher = Teacher(300, 300, 32, 32)
 display_scroll = [0,0]
+
+
 
 player_bullets = []
 
 while True:
-    display.fill((152,158,172))
+    display.fill((0,0,255))
+    distance = pygame.math.Vector2(player.x, player.y).distance_to((teacher.x, teacher.y))
 
     mouse_x, mouse_y = pygame.mouse.get_pos()
 
@@ -86,13 +100,13 @@ while True:
 
     keys = pygame.key.get_pressed()
 
-    pygame.draw.rect(display, (255,255,255), (100-display_scroll[0], 100-display_scroll[1], 16, 16))
+    #pygame.draw.rect(display, (255,255,255), (100-display_scroll[0], 100-display_scroll[1], 16, 16))
 
     if keys[pygame.K_a]:
         display_scroll[0] -= 5
 
         player.moving_left = True
-
+        print(distance)
 
         for bullet in player_bullets:
             bullet.x += 5
@@ -114,6 +128,7 @@ while True:
         
 
     player.main(display)
+    teacher.main(display)
 
     for bullet in player_bullets:
         bullet.main(display)

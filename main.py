@@ -36,8 +36,10 @@ class Player:
         self.idle_count += 1
 
         if self.moving_right:
+            self.x += 2
             display.blit(pygame.transform.scale(player_walk_images[self.animation_count//4], (32, 42)), (self.x, self.y))
         elif self.moving_left:
+            self.x -= 2
             display.blit(pygame.transform.scale(pygame.transform.flip(player_walk_images[self.animation_count//4], True, False), (32, 42)), (self.x, self.y))
         else:
             display.blit(pygame.transform.scale(player_idle_images[self.idle_count//8], (32, 42)), (self.x, self.y))
@@ -72,7 +74,9 @@ class PlayerBullet:
         self.y -= int(self.y_vel)
 
         pygame.draw.circle(display, (0,0,0), (self.x, self.y), 5)
-        
+    
+
+
 
 player = Player(400, 300, 32, 32)
 teacher = Teacher(300, 300, 32, 32)
@@ -102,11 +106,14 @@ while True:
 
     #pygame.draw.rect(display, (255,255,255), (100-display_scroll[0], 100-display_scroll[1], 16, 16))
 
+
+    if keys[pygame.K_e]:
+        print("interact")
     if keys[pygame.K_a]:
         display_scroll[0] -= 5
 
         player.moving_left = True
-        print(distance)
+        print("Distance from NPC:", distance)
 
         for bullet in player_bullets:
             bullet.x += 5
@@ -114,7 +121,7 @@ while True:
         display_scroll[0] += 5.
 
         player.moving_right = True
-        
+        print("Distance from NPC:", distance)
         for bullet in player_bullets:
             bullet.x -= 5
     if keys[pygame.K_w]:
@@ -125,6 +132,18 @@ while True:
         display_scroll[1] += 5
         for bullet in player_bullets:
             bullet.y -= 5
+
+
+    
+
+##    for event in pygame.event.get():
+##        if event.type == pygame.KEYUP:
+##            if event.key == pygame.K_a or event.key == pygame.K_d:
+##                
+##                if event.type == pygame.KEYDOWN:
+##                    if distance <= 45 and event.key == pygame.K_e:
+##                        print("interact")
+        
         
 
     player.main(display)

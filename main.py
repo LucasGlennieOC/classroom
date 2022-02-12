@@ -80,11 +80,13 @@ class PlayerBullet:
 
 player = Player(400, 300, 32, 32)
 teacher = Teacher(300, 300, 32, 32)
+
 display_scroll = [0,0]
 
 
 
 player_bullets = []
+
 
 while True:
     display.fill((0,0,255))
@@ -94,8 +96,8 @@ while True:
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            sys.exit()
-            pygame.QUIT
+            pygame.quit()
+            exit()
 
         if event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:
@@ -132,9 +134,13 @@ while True:
         display_scroll[1] += 5
         for bullet in player_bullets:
             bullet.y -= 5
+##    for bullet in player_bullets:
+##            
+##        if bullet.sprite.collide_rect(teacher):
+##            print("collided")
 
-
-    
+##
+##    
 
 ##    for event in pygame.event.get():
 ##        if event.type == pygame.KEYUP:

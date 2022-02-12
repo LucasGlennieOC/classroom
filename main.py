@@ -134,10 +134,10 @@ while True:
         display_scroll[1] += 5
         for bullet in player_bullets:
             bullet.y -= 5
-##    for bullet in player_bullets:
-##            
-##        if bullet.sprite.collide_rect(teacher):
-##            print("collided")
+    for bullet in player_bullets:
+            
+        if bullet.sprite.collide_rect(teacher):
+            print("collided")
 
 ##
 ##    

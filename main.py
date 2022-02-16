@@ -11,6 +11,8 @@ throw_sound = pygame.mixer.Sound("throw.mp3")
 player_walk_images = [pygame.image.load("graphics/run1.png"), pygame.image.load("graphics/run2.png"), pygame.image.load("graphics/run3.png"), pygame.image.load("graphics/run4.png")]
 player_idle_images = [pygame.image.load("graphics/idle/idle.png"), pygame.image.load("graphics/idle/idle1.png"), pygame.image.load("graphics/idle/idle2.png"), pygame.image.load("graphics/idle/idle4.png"), pygame.image.load("graphics/idle/idle5.png"), pygame.image.load("graphics/idle/idle6.png"), pygame.image.load("graphics/idle/idle7.png")]
 teacher_image = pygame.image.load("graphics/teacher.png")
+bubble_image = pygame.image.load("graphics/speech.png")
+
 
 class Player:
     def __init__(self, x, y, width, height):
@@ -22,6 +24,8 @@ class Player:
         self.idle_count = 0
         self.moving_right = False
         self.moving_left = False
+        self.moving_up = False
+        self.moving_down = False
     def main(self, display):
         if self.animation_count + 1 >= 16:
             self.animation_count = 0
@@ -38,14 +42,35 @@ class Player:
         if self.moving_right:
             self.x += 2
             display.blit(pygame.transform.scale(player_walk_images[self.animation_count//4], (32, 42)), (self.x, self.y))
+            if self.moving_up:
+                self.y += 2
+                display.blit(pygame.transform.scale(player_walk_images[self.animation_count//4], (32, 42)), (self.x, self.y))
+            elif self.moving_down:
+                self.y -= 2
+                display.blit(pygame.transform.scale(player_walk_images[self.animation_count//4], (32, 42)), (self.x, self.y))
         elif self.moving_left:
             self.x -= 2
             display.blit(pygame.transform.scale(pygame.transform.flip(player_walk_images[self.animation_count//4], True, False), (32, 42)), (self.x, self.y))
+            if self.moving_up:
+                self.y += 2
+                display.blit(pygame.transform.scale(pygame.transform.flip(player_walk_images[self.animation_count//4], True, False), (32, 42)), (self.x, self.y))
+            elif self.moving_down:
+                self.y -= 2
+                display.blit(pygame.transform.scale(pygame.transform.flip(player_walk_images[self.animation_count//4], True, False), (32, 42)), (self.x, self.y))
+        elif self.moving_up:
+            self.y += 2
+            display.blit(pygame.transform.scale(pygame.transform.flip(player_walk_images[self.animation_count//4], True, False), (32, 42)), (self.x, self.y))
+        elif self.moving_down:
+            self.y -= 2
+            display.blit(pygame.transform.scale(pygame.transform.flip(player_walk_images[self.animation_count//4], True, False), (32, 42)), (self.x, self.y))
+
         else:
             display.blit(pygame.transform.scale(player_idle_images[self.idle_count//8], (32, 42)), (self.x, self.y))
         #pygame.draw.rect(display, (255, 0, 0), (self.x, self.y, self.width, self.height))
         self.moving_right = False
         self.moving_left = False
+        self.moving_up = False
+        self.moving_down = False
 
 class Teacher:
     def __init__(self, x, y, width, height):
@@ -83,7 +108,7 @@ teacher = Teacher(300, 300, 32, 32)
 
 display_scroll = [0,0]
 
-
+interact = False
 
 player_bullets = []
 
@@ -103,24 +128,34 @@ while True:
             if event.button == 1:
                 pygame.mixer.Sound.play(throw_sound)
                 player_bullets.append(PlayerBullet(player.x, player.y, mouse_x, mouse_y))
+        if event.type == pygame.KEYDOWN:
+            if distance <= 45 and event.key == pygame.K_e:
+                print("interact")
+                
+                display.blit(pygame.transform.scale(bubble_image, (72, 72)), (50-display_scroll[0], 75-display_scroll[1]))
 
     keys = pygame.key.get_pressed()
 
     #pygame.draw.rect(display, (255,255,255), (100-display_scroll[0], 100-display_scroll[1], 16, 16))
 
 
-    if keys[pygame.K_e]:
-        print("interact")
+    
     if keys[pygame.K_a]:
+        #print(player.x)
         display_scroll[0] -= 5
-
         player.moving_left = True
+##        if player.x <= 5:
+##            
+##            player.moving_left = False
+##            display.blit(pygame.transform.scale(pygame.transform.flip(player_walk_images[player.animation_count//4], True, False), (32, 42)), (player.x, player.y))
+
+        print(display_scroll)
         print("Distance from NPC:", distance)
 
         for bullet in player_bullets:
             bullet.x += 5
     if keys[pygame.K_d]:
-        display_scroll[0] += 5.
+        display_scroll[0] += 5
 
         player.moving_right = True
         print("Distance from NPC:", distance)
@@ -128,10 +163,14 @@ while True:
             bullet.x -= 5
     if keys[pygame.K_w]:
         display_scroll[1] -= 5
+        #player.moving_up = True
+        print("Distance from NPC:", distance)
         for bullet in player_bullets:
             bullet.y += 5
     if keys[pygame.K_s]:
         display_scroll[1] += 5
+        #player.moving_down = True
+        print("Distance from NPC:", distance)
         for bullet in player_bullets:
             bullet.y -= 5
     for bullet in player_bullets:
@@ -139,16 +178,14 @@ while True:
         if bullet.sprite.collide_rect(teacher):
             print("collided")
 
+
+
 ##
 ##    
 
-##    for event in pygame.event.get():
-##        if event.type == pygame.KEYUP:
-##            if event.key == pygame.K_a or event.key == pygame.K_d:
+##    
 ##                
-##                if event.type == pygame.KEYDOWN:
-##                    if distance <= 45 and event.key == pygame.K_e:
-##                        print("interact")
+
         
         
 

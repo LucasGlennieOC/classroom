@@ -1,1 +1,2 @@
-a game designed on the concept of assisting students with maths.
+An RPG game designed to assist students with mathematics. 
+This is for an assignment :)

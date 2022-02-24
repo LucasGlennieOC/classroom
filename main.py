@@ -3,14 +3,17 @@ import sys
 import math
 import ptext
 import time
-
+from time import sleep
 global interact_man
 
 pygame.init()
 #changing the cursor to a crosshair
 pygame.mouse.set_system_cursor(pygame.SYSTEM_CURSOR_CROSSHAIR)
+width = 800
+height = 600
 #stuff
 display = pygame.display.set_mode((800,600))
+game_surf = pygame.surface.Surface((width, height))
 clock = pygame.time.Clock()
 #sounds
 throw_sound = pygame.mixer.Sound("throw.mp3")
@@ -20,9 +23,12 @@ player_idle_images = [pygame.image.load("graphics/idle/idle.png"), pygame.image.
 teacher_image = pygame.image.load("graphics/teacher.png")
 bubble_image = pygame.image.load("graphics/speech.png")
 child_image = pygame.image.load("graphics/child.png")
+a_image = pygame.image.load("Pixel 180/U_0000A0.png")
+
 
 interact_man = False
 
+dialogue = "Hey there! Welcome to the game."
 
 
 
@@ -127,16 +133,16 @@ class PlayerBullet:
     
 
 
-def interactman():
-    interact_man = True
-    if event.type == pygame.KEYDOWN:
-        if event.key == pygame.K_r:
-            interact_man = False
-    while interact_man:
-        ptext.draw("bing chilling", (20, 100), fontname="text/Pixel-y14Y.ttf", fontsize=60)
-        pygame.display.update()
-        if distance >= 25:
-            interact_man = False
+##def interactman():
+##    interact_man = True
+##    if event.type == pygame.KEYDOWN:
+##        if event.key == pygame.K_r:
+##            interact_man = False
+##    while interact_man:
+##        #
+##        pygame.display.update()
+##        if distance >= 25:
+##            interact_man = False
 
 
 #defining stuff
@@ -144,6 +150,11 @@ player = Player(400, 300, 32, 32)
 teacher = Teacher(300, 300, 32, 32)
 classmate = Classmate(-100, -100, 32, 32)
 display_scroll = [0,0]
+
+
+    
+
+
 
 def keypress():
     keys = pygame.key.get_pressed()
@@ -188,14 +199,12 @@ while True:
     display.fill((0,0,255))
     distance = pygame.math.Vector2(player.x, player.y).distance_to((teacher.x, teacher.y))
     distancekid = pygame.math.Vector2(player.x, player.y).distance_to((classmate.x, classmate.y))
+
     mouse_x, mouse_y = pygame.mouse.get_pos()
 
-    if doText:
-        ptext.draw("bing chilling", (20, 100), fontname="text/Pixel-y14Y.ttf", fontsize=60)
-    if doSpeechMan:
-        display.blit(pygame.transform.scale(bubble_image, (72, 72)), (50-display_scroll[0], 75-display_scroll[1]))
-    if doSpeechKid:
-        display.blit(pygame.transform.scale(bubble_image, (72, 72)), (-150-display_scroll[0], -130-display_scroll[1]))
+    
+
+    
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
@@ -205,6 +214,7 @@ while True:
             if event.button == 1:
                 pygame.mixer.Sound.play(throw_sound)
                 player_bullets.append(PlayerBullet(player.x, player.y, mouse_x, mouse_y))
+                print(mouse_x, mouse_y)
         if event.type == pygame.KEYDOWN:
             if distance <= 25:
                 doSpeechMan = True
@@ -214,18 +224,39 @@ while True:
             if distance >= 25:
                 doText = False
                 doSpeechMan = False
-                pygame.display.update()
+
             if distancekid <= 550 and distancekid >= 500:
                 doSpeechKid = True
                 if event.key == pygame.K_e:
                     print("wassup my diggety dog")
             else:
                 doSpeechKid = False
-                pygame.display.update()
+
                 
 
-                        
-        pygame.display.update()
+    if doSpeechMan:
+        
+        display.blit(pygame.transform.scale(bubble_image, (72, 72)), (50-display_scroll[0], 75-display_scroll[1]))
+        ptext.draw("Press E", (60-display_scroll[0], 90-display_scroll[1]), color="black", fontname="text/Pixel-y14Y.ttf", fontsize=10)
+    if doSpeechKid:
+        display.blit(pygame.transform.scale(bubble_image, (72, 72)), (-150-display_scroll[0], -130-display_scroll[1]))
+        ptext.draw("Press E", (-140-display_scroll[0], -115-display_scroll[1]), color="black", fontname="text/Pixel-y14Y.ttf", fontsize=10)
+    if doText:
+        display.fill((0,0,255))
+        display.blit(pygame.transform.scale(teacher_image, (500,500)), (150,200))
+        letterx = 100
+        lettery = 100
+        letter1 = len(dialogue)
+        #timetext = len(dialogue)
+        #print(timetext)
+        for letter in dialogue:
+            letterx += 20
+            #timetext += 1
+            sleep(0.2)
+            print(letter)
+            ptext.draw(letter, (letterx, 100), fontname="text/dialogue.ttf", fontsize=30)
+
+    #pygame.display.update()
     
 
     #pygame.draw.rect(display, (255,255,255), (100-display_scroll[0], 100-display_scroll[1], 16, 16))
